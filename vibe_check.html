@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>vibe check ✦ a soft landing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #08060F;
+    --bg: #15111F;
+    --bg-2: #1D1730;
+    --surface: #221B36;
+    --surface-2: #2E2545;
+    --line: #3C3154;
+    --accent: #D4B5FF;
+    --accent-soft: #A68FD9;
+    --rose: #FFB8D1;
+    --rose-deep: #E88FB3;
+    --gold: #E8C547;
+    --mint: #A8E6CF;
+    --coral: #FF9AA2;
+    --muted: #8C84A3;
+    --text: #EDE6F5;
+    --text-dim: #C4BAD6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100vh;
+    font-family: 'Inter Tight', sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.08;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' /%3E%3C/svg%3E");
+    mix-blend-mode: screen;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(212, 181, 255, 0.12) 0%, transparent 45%),
+      radial-gradient(ellipse at 85% 85%, rgba(255, 184, 209, 0.08) 0%, transparent 40%),
+      radial-gradient(ellipse at 50% 50%, rgba(232, 197, 71, 0.04) 0%, transparent 60%);
+  }
+
+  #app {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    padding: 20px 24px 100px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* ---------- TOP BAR ---------- */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0 28px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 28px;
+  }
+
+  .brand {
+    font-family: 'Instrument Serif', serif;
+    font-size: 24px;
+    font-style: italic;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  .brand .dot {
+    color: var(--rose);
+    font-size: 14px;
+    margin: 0 4px;
+    vertical-align: middle;
+  }
+
+  .status-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 11px;
+    letter-spacing: 0.05em;
+    text-transform: lowercase;
+  }
+
+  /* ---------- HOME HERO ---------- */
+  .home-hero {
+    padding: 32px 0 40px;
+    text-align: left;
+  }
+
+  .hero-kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-soft);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .hero-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(42px, 8vw, 68px);
+    line-height: 0.95;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--rose);
+  }
+
+  .hero-title .accent {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    color: var(--text-dim);
+    max-width: 440px;
+    line-height: 1.55;
+    margin-bottom: 8px;
+  }
+
+  .hero-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-top: 8px;
+  }
+
+  /* ---------- MODE GRID ---------- */
+  .mode-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+
+  @media (max-width: 520px) {
+    .mode-grid { grid-template-columns: 1fr; }
+  }
+
+  .mode-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 22px 20px 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, border 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    min-height: 148px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .mode-card:hover {
+    transform: translateY(-2px);
+    background: var(--surface-2);
+    border-color: var(--accent-soft);
+  }
+
+  .mode-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle at top right, rgba(212, 181, 255, 0.15), transparent 70%);
+    pointer-events: none;
+  }
+
+  .mode-card.rose::before {
+    background: radial-gradient(circle at top right, rgba(255, 184, 209, 0.18), transparent 70%);
+  }
+
+  .mode-card.gold::before {
+    background: radial-gradient(circle at top right, rgba(232, 197, 71, 0.15), transparent 70%);
+  }
+
+  .mode-card.mint::before {
+    background: radial-gradient(circle at top right, rgba(168, 230, 207, 0.15), transparent 70%);
+  }
+
+  .mode-card.coral::before {
+    background: radial-gradient(circle at top right, rgba(255, 154, 162, 0.16), transparent 70%);
+  }
+
+  .mode-kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .mode-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    font-style: italic;
+    line-height: 1;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .mode-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.45;
+  }
+
+  /* ---------- SECTION HEADER (in modes) ---------- */
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+  }
+
+  .back-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent-soft);
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    background: none;
+    border: none;
+    padding: 6px 10px 6px 0;
+  }
+
+  .back-link:hover { color: var(--accent); }
+
+  .section-kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: lowercase;
+  }
+
+  /* ---------- CARD / SWIPE UI ---------- */
+  .card-stack {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 36px 28px 28px;
+    min-height: 400px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  .card-stack::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 181, 255, 0.3), transparent);
+  }
+
+  .card-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent-soft);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .card-prompt {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(26px, 5vw, 34px);
+    line-height: 1.15;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  .card-prompt em {
+    font-style: italic;
+    color: var(--rose);
+  }
+
+  .card-answer {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    padding: 16px 18px;
+    background: rgba(212, 181, 255, 0.06);
+    border-left: 2px solid var(--accent-soft);
+    border-radius: 0 12px 12px 0;
+    margin-top: 12px;
+  }
+
+  .card-answer .answer-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .card-answer strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .card-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-top: 8px;
+  }
+
+  /* ---------- BUTTONS ---------- */
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 11px 20px;
+    border-radius: 999px;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--text);
+    transition: all 0.15s ease;
+    letter-spacing: 0.01em;
+  }
+
+  .btn:hover {
+    background: var(--surface-2);
+    border-color: var(--accent-soft);
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--ink);
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+
+  .btn-primary:hover {
+    background: var(--rose);
+    border-color: var(--rose);
+  }
+
+  .btn-ghost {
+    border-color: transparent;
+    color: var(--muted);
+    padding: 11px 12px;
+  }
+
+  .btn-ghost:hover {
+    color: var(--text-dim);
+    background: transparent;
+  }
+
+  /* ---------- QUIZ OPTIONS ---------- */
+  .opt-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .opt {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 15px;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Inter Tight', sans-serif;
+    transition: all 0.15s ease;
+    line-height: 1.4;
+  }
+
+  .opt:hover {
+    background: var(--surface-2);
+    border-color: var(--accent-soft);
+    transform: translateX(3px);
+  }
+
+  .opt-letter {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-soft);
+    letter-spacing: 0.1em;
+    margin-right: 10px;
+  }
+
+  /* ---------- PROGRESS ---------- */
+  .progress-track {
+    height: 2px;
+    background: var(--line);
+    border-radius: 2px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--rose));
+    transition: width 0.4s ease;
+  }
+
+  /* ---------- RESULT ---------- */
+  .result-hero {
+    text-align: center;
+    padding: 20px 0 28px;
+  }
+
+  .result-kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-soft);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .result-name {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(40px, 9vw, 64px);
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--rose);
+    font-style: italic;
+    margin-bottom: 16px;
+  }
+
+  .result-desc {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.65;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  /* ---------- WEEKEND SORTER ---------- */
+  .sorter-q {
+    font-family: 'Instrument Serif', serif;
+    font-size: 30px;
+    line-height: 1.15;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .sorter-q em {
+    font-style: italic;
+    color: var(--rose);
+  }
+
+  .sorter-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 22px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .sorter-result {
+    margin-top: 8px;
+  }
+
+  .result-card {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 20px 22px;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .result-card.top {
+    border-color: var(--rose-deep);
+    background: linear-gradient(135deg, rgba(255, 184, 209, 0.08), rgba(212, 181, 255, 0.05));
+  }
+
+  .result-rank {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent-soft);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .result-card.top .result-rank {
+    color: var(--rose);
+  }
+
+  .result-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 24px;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .result-why {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.55;
+  }
+
+  /* ---------- HELPERS ---------- */
+  .hidden { display: none !important; }
+
+  .fade-in {
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--line);
+    margin: 32px 0;
+  }
+
+  /* ---------- FOOTER ---------- */
+  .foot {
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+
+  .foot em {
+    color: var(--accent-soft);
+    font-style: italic;
+    font-family: 'Instrument Serif', serif;
+    font-size: 13px;
+  }
+
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+  // =============================================================
+  // STATE
+  // =============================================================
+  const state = {
+    view: 'home',
+    modeData: null,
+    currentIdx: 0,
+    quizAnswers: [],
+    currentQuizKey: null,
+    sorterStep: 0,
+    sorterAnswers: {}
+  };
+
+  const app = document.getElementById('app');
+
+  // =============================================================
+  // DATA: RIDDLES
+  // =============================================================
+  const riddles = [
+    { q: "I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?", a: "An echo." },
+    { q: "The more you take, the more you leave behind.", a: "Footsteps." },
+    { q: "I have cities but no houses, mountains but no trees, and water but no fish. What am I?", a: "A map." },
+    { q: "What can travel around the world while staying in the same corner?", a: "A stamp." },
+    { q: "What has keys but no locks, space but no room, and you can enter but not go inside?", a: "A keyboard." },
+    { q: "I'm tall when I'm young and short when I'm old. What am I?", a: "A candle." },
+    { q: "What goes up but never comes back down?", a: "Your age." },
+    { q: "I'm full of holes but still hold water. What am I?", a: "A sponge." },
+    { q: "If you drop me I'm sure to crack, but smile at me and I'll smile right back.", a: "A mirror." },
+    { q: "I have a face and two hands but no arms or legs. What am I?", a: "A clock." },
+    { q: "What belongs to you, but other people use it more than you do?", a: "Your name." },
+    { q: "I fly without wings. I cry without eyes. Wherever I go, darkness flies.", a: "A cloud." },
+    { q: "What has a head and a tail but no body?", a: "A coin." },
+    { q: "What can you catch but never throw?", a: "A cold." },
+    { q: "I disappear the moment you say my name. What am I?", a: "Silence." },
+    { q: "I have branches but no fruit, trunk or leaves. What am I?", a: "A bank." },
+    { q: "What has many keys but can't open a single lock?", a: "A piano." },
+    { q: "Forward I am heavy, backward I am not. What am I?", a: "The word 'ton'." },
+    { q: "The more of this there is, the less you see.", a: "Darkness." },
+    { q: "What word in the dictionary is spelled incorrectly?", a: "The word 'incorrectly'." },
+    { q: "A man is looking at a photo. He says: 'Brothers and sisters I have none, but this man's father is my father's son.' Who is in the photo?", a: "His son." },
+    { q: "I shave every day but my beard stays the same. Who am I?", a: "A barber." },
+    { q: "Two fathers and two sons go fishing. Each catches one fish, yet they only bring back three fish. How?", a: "There are only three people: a grandfather, his son, and his grandson. Two fathers, two sons." }
+  ];
+
+  // =============================================================
+  // DATA: FACTS
+  // =============================================================
+  const facts = [
+    { f: "Octopuses have three hearts and blue blood.", t: "biology" },
+    { f: "A day on Venus is longer than a year on Venus.", t: "space" },
+    { f: "Bananas are berries. Strawberries are not.", t: "plot twist" },
+    { f: "Sharks existed before trees did.", t: "earth" },
+    { f: "Honey never spoils. 3,000-year-old honey found in Egyptian tombs is still edible.", t: "history" },
+    { f: "Cleopatra lived closer in time to the moon landing than to the building of the Great Pyramid.", t: "history" },
+    { f: "The Eiffel Tower can grow up to 15cm taller in summer because the metal expands in the heat.", t: "physics" },
+    { f: "There are more possible chess games than atoms in the observable universe.", t: "maths" },
+    { f: "Wombat poo is cube-shaped. Scientists still do not fully know why.", t: "animals" },
+    { f: "A shrimp's heart is in its head.", t: "biology" },
+    { f: "Cows have best friends and get visibly stressed when they are separated from them.", t: "animals" },
+    { f: "A group of flamingos is called a flamboyance.", t: "language" },
+    { f: "Hot water can sometimes freeze faster than cold water. It is called the Mpemba effect.", t: "physics" },
+    { f: "Your brain uses around 20 percent of your body's energy but only makes up about 2 percent of your body weight.", t: "biology" },
+    { f: "Dolphins have signature whistles that act like names.", t: "animals" },
+    { f: "Saturn would float if you could find a bathtub big enough. Its density is less than water.", t: "space" },
+    { f: "A single strand of spider silk is stronger than steel of the same thickness.", t: "science" },
+    { f: "Koalas sleep up to 22 hours a day. Iconic behaviour.", t: "animals" },
+    { f: "Humans share about 60 percent of their DNA with bananas.", t: "biology" },
+    { f: "Butterflies taste with their feet.", t: "animals" },
+    { f: "Sloths can hold their breath longer than dolphins. Up to 40 minutes.", t: "animals" },
+    { f: "The unicorn is Scotland's national animal.", t: "random" },
+    { f: "Astronauts can grow up to 5cm taller in space because gravity is no longer compressing their spine.", t: "space" },
+    { f: "Goats have rectangular pupils.", t: "animals" },
+    { f: "Lightning strikes the Earth about 100 times every second.", t: "earth" },
+    { f: "There is a planet made largely of diamond. It is called 55 Cancri e.", t: "space" },
+    { f: "The Statue of Liberty was originally copper-coloured. It turned green from oxidation.", t: "history" },
+    { f: "An octopus can squeeze through any opening larger than its beak.", t: "animals" },
+    { f: "Jupiter is so massive that all the other planets in the solar system could fit inside it.", t: "space" },
+    { f: "Sound cannot travel through space. It needs a medium to vibrate through.", t: "physics" },
+    { f: "The longest recorded hiccupping fit lasted 68 years.", t: "random" },
+    { f: "Napoleon was once attacked by a horde of rabbits he had organised for a hunt.", t: "history" },
+    { f: "A flea can jump 150 times its own length. Scaled up, that is a human jumping over a 30-storey building.", t: "animals" }
+  ];
+
+  // =============================================================
+  // DATA: KATSEYE MEMBER QUIZ
+  // =============================================================
+  const katseyeQuiz = {
+    title: "which katseye member are you",
+    kicker: "six vibes, one verdict",
+    members: {
+      manon: {
+        name: "Manon",
+        desc: "Parisian quiet luxury energy. You say less, mean more. People think you are aloof but you are just observing everything. When you do open up, your friends treat it like a rare weather event."
+      },
+      megan: {
+        name: "Megan",
+        desc: "Warm main-character aura with zero try-hard. You are the one who makes everyone else feel like the main character too. Secretly the funniest person in every room."
+      },
+      lara: {
+        name: "Lara",
+        desc: "Steady, grounded, wise beyond your years. You give advice that actually lands. You have a way of making people feel genuinely seen. Old soul. Big depth."
+      },
+      sophia: {
+        name: "Sophia",
+        desc: "Bright chaos, infectious laugh, you cannot be brought down. You are the group's serotonin source. Also secretly competitive. You will win the board game and not apologise."
+      },
+      daniela: {
+        name: "Daniela",
+        desc: "Bold, confident, unbothered. You know exactly who you are and you do not dilute. You are the friend people hype themselves up by texting. Inner monologue: permanent slow-mo entrance."
+      },
+      yoonchae: {
+        name: "Yoonchae",
+        desc: "Effortlessly cool without performing it. You have range nobody expected. Soft spoken in public, absolutely deranged in the group chat. A duality."
+      }
+    },
+    questions: [
+      {
+        q: "Your ideal saturday is",
+        opts: [
+          { t: "Wandering a gallery then one good coffee", w: { manon: 3, lara: 1 } },
+          { t: "Picnic with your favourite people and a bluetooth speaker", w: { megan: 3, sophia: 1 } },
+          { t: "Long walk, journalling, an early dinner", w: { lara: 3, manon: 1 } },
+          { t: "Shopping then somewhere loud for dinner", w: { daniela: 3, megan: 1 } },
+          { t: "Pottering. Making. Something creative that has no deadline", w: { yoonchae: 3, lara: 1 } },
+          { t: "Beach if it's sunny, cinema if it's not", w: { sophia: 3, yoonchae: 1 } }
+        ]
+      },
+      {
+        q: "Your signature outfit this month",
+        opts: [
+          { t: "Neutrals, tailoring, one gold earring", w: { manon: 3 } },
+          { t: "Vintage tee, baggy jeans, lipgloss", w: { megan: 3, sophia: 1 } },
+          { t: "Soft layers in warm tones", w: { lara: 3, yoonchae: 1 } },
+          { t: "Statement boots and a cropped jacket", w: { daniela: 3 } },
+          { t: "Bright colours, maximalist, no rules", w: { sophia: 3, megan: 1 } },
+          { t: "Oversized hoodie, cargos, black cap", w: { yoonchae: 3 } }
+        ]
+      },
+      {
+        q: "At a party you are usually",
+        opts: [
+          { t: "Holding the wall, observing, mysteriously cool", w: { manon: 3, yoonchae: 1 } },
+          { t: "Making everyone laugh in the kitchen", w: { megan: 3, sophia: 2 } },
+          { t: "Having the one deep conversation of the night", w: { lara: 3 } },
+          { t: "Running the aux and unbothered about opinions", w: { daniela: 3 } },
+          { t: "On the dance floor for the entire set", w: { sophia: 3, daniela: 1 } },
+          { t: "Quietly there, then suddenly iconic at 11pm", w: { yoonchae: 3 } }
+        ]
+      },
+      {
+        q: "Friends would describe you as",
+        opts: [
+          { t: "Chic, self-contained, a bit intimidating", w: { manon: 3 } },
+          { t: "Warm, hilarious, the group's glue", w: { megan: 3 } },
+          { t: "Wise, calm, gives the best advice", w: { lara: 3 } },
+          { t: "Confident, blunt, never fake", w: { daniela: 3 } },
+          { t: "A ray of sunlight, a lot of serotonin", w: { sophia: 3 } },
+          { t: "Secretly wild, publicly composed", w: { yoonchae: 3 } }
+        ]
+      },
+      {
+        q: "Your comfort format when you need to recharge",
+        opts: [
+          { t: "Solo walk and a playlist nobody else hears", w: { manon: 3, yoonchae: 1 } },
+          { t: "Facetiming your people for two hours", w: { megan: 3 } },
+          { t: "Journal, tea, early night", w: { lara: 3 } },
+          { t: "Full makeover, hair, skin, reset", w: { daniela: 3, sophia: 1 } },
+          { t: "A loud chaotic group hangout", w: { sophia: 3 } },
+          { t: "Absolutely locking in on a hyperfixation", w: { yoonchae: 3 } }
+        ]
+      },
+      {
+        q: "What you secretly want to be known for",
+        opts: [
+          { t: "Having exquisite taste", w: { manon: 3 } },
+          { t: "Making people feel included", w: { megan: 3, lara: 1 } },
+          { t: "Being the grounded one", w: { lara: 3 } },
+          { t: "Not giving a single one", w: { daniela: 3 } },
+          { t: "Always bringing the fun", w: { sophia: 3 } },
+          { t: "Being unpredictable in a good way", w: { yoonchae: 3 } }
+        ]
+      }
+    ]
+  };
+
+  // =============================================================
+  // DATA: BLACKPINK MEMBER QUIZ
+  // =============================================================
+  const blackpinkQuiz = {
+    title: "which blackpink member are you",
+    kicker: "jisoo, jennie, rosé or lisa",
+    members: {
+      jisoo: {
+        name: "Jisoo",
+        desc: "Visuals serve but your real superpower is being the funny one in the group. People underestimate you at first. Then you speak and they are obsessed. Grounded, kind, secretly deranged sense of humour."
+      },
+      jennie: {
+        name: "Jennie",
+        desc: "Effortless cool. You walk into rooms like there is background music. Confident but not loud about it. You understand quiet power and you use it sparingly."
+      },
+      rose: {
+        name: "Rosé",
+        desc: "Soft voice, steel spine. You feel everything deeply and channel it into art, lyrics, playlists, your notes app. You are the friend who actually remembers what they said last week."
+      },
+      lisa: {
+        name: "Lisa",
+        desc: "Magnetic energy. You do not try to be the centre of attention but you end up there anyway. Precise, disciplined, chaotic on the inside, controlled on the outside. Showstopper."
+      }
+    },
+    questions: [
+      {
+        q: "How people describe you before they really know you",
+        opts: [
+          { t: "Intimidating but actually sweet", w: { jennie: 2, lisa: 1 } },
+          { t: "Quiet and mysterious", w: { rose: 2, jisoo: 1 } },
+          { t: "A performer, always on", w: { lisa: 2 } },
+          { t: "Funny, warm, silly", w: { jisoo: 2 } }
+        ]
+      },
+      {
+        q: "Your dream home aesthetic",
+        opts: [
+          { t: "Parisian apartment, art books, vintage", w: { jennie: 2 } },
+          { t: "Sunlit cottage, plants, soft textures", w: { rose: 2 } },
+          { t: "Minimalist penthouse, black and white", w: { lisa: 2 } },
+          { t: "Cozy maximalism, colour everywhere", w: { jisoo: 2 } }
+        ]
+      },
+      {
+        q: "Your go-to drink",
+        opts: [
+          { t: "Iced americano", w: { jennie: 2 } },
+          { t: "Strawberry matcha", w: { rose: 2 } },
+          { t: "Thai iced tea", w: { lisa: 2 } },
+          { t: "Hot chocolate with marshmallows", w: { jisoo: 2 } }
+        ]
+      },
+      {
+        q: "Your signature accessory",
+        opts: [
+          { t: "Gold rings and a chain", w: { jennie: 2 } },
+          { t: "A simple pearl earring or necklace", w: { rose: 2 } },
+          { t: "Chunky boots or statement sneakers", w: { lisa: 2 } },
+          { t: "Silk scarf or vintage bag", w: { jisoo: 2 } }
+        ]
+      },
+      {
+        q: "Your relationship with your group chat",
+        opts: [
+          { t: "You send one message and it ends discussions", w: { jennie: 2 } },
+          { t: "You send long thoughtful voice notes", w: { rose: 2 } },
+          { t: "You send memes at 1am, no context", w: { lisa: 2 } },
+          { t: "You are the chaos. Running jokes. Constant.", w: { jisoo: 2 } }
+        ]
+      },
+      {
+        q: "Pick a flaw you secretly think is a strength",
+        opts: [
+          { t: "Overthinking everything", w: { rose: 2 } },
+          { t: "Being a perfectionist", w: { lisa: 2 } },
+          { t: "Having walls up at first", w: { jennie: 2 } },
+          { t: "Laughing at the wrong moments", w: { jisoo: 2 } }
+        ]
+      }
+    ]
+  };
+
+  // =============================================================
+  // DATA: BILLIE SONG MOOD QUIZ
+  // =============================================================
+  const billieQuiz = {
+    title: "what billie eilish song are you today",
+    kicker: "five moods, one verdict",
+    members: {
+      oceaneyes: {
+        name: "ocean eyes",
+        desc: "Tender. A bit dreamy. You are noticing pretty things today and feeling everything softly. A good day for walks, playlists, and not explaining yourself to anyone."
+      },
+      badguy: {
+        name: "bad guy",
+        desc: "Playful, low-key menace. You are in a mood but a fun one. Confidence is on. Patience is not. You are going to say exactly what you think and walk away."
+      },
+      everythingiwanted: {
+        name: "everything i wanted",
+        desc: "Tender but introspective. Today is a check-in day. Things are fine on paper but your brain is loud. Go easier on yourself. Text a safe person."
+      },
+      happierthanever: {
+        name: "happier than ever",
+        desc: "You are done tolerating a thing. Could be a person, could be a habit. There's a storm building in you. Channel it. This energy is clarifying."
+      },
+      whatwasimadefor: {
+        name: "what was i made for",
+        desc: "Soft, searching, nostalgic. You are thinking big thoughts today about who you are becoming. That is not a bad place to be. Sit with it."
+      }
+    },
+    questions: [
+      {
+        q: "Current vibe colour",
+        opts: [
+          { t: "Soft blue", w: { oceaneyes: 2 } },
+          { t: "Charcoal and neon", w: { badguy: 2 } },
+          { t: "Dusty rose", w: { everythingiwanted: 2, whatwasimadefor: 1 } },
+          { t: "Storm grey", w: { happierthanever: 2 } },
+          { t: "Vintage cream", w: { whatwasimadefor: 2 } }
+        ]
+      },
+      {
+        q: "What is your brain doing right now",
+        opts: [
+          { t: "Drifting. Dreamy. Half-there", w: { oceaneyes: 2 } },
+          { t: "Plotting something petty", w: { badguy: 2 } },
+          { t: "Spiralling quietly", w: { everythingiwanted: 2 } },
+          { t: "Boiling", w: { happierthanever: 2 } },
+          { t: "Asking big life questions", w: { whatwasimadefor: 2 } }
+        ]
+      },
+      {
+        q: "What you need today",
+        opts: [
+          { t: "Beauty. Small pretty moments", w: { oceaneyes: 2 } },
+          { t: "Revenge, but cute", w: { badguy: 2 } },
+          { t: "A hug and also silence", w: { everythingiwanted: 2 } },
+          { t: "To say the thing out loud", w: { happierthanever: 2 } },
+          { t: "A long walk and a notebook", w: { whatwasimadefor: 2 } }
+        ]
+      },
+      {
+        q: "Social battery",
+        opts: [
+          { t: "Low but wistful", w: { oceaneyes: 2, whatwasimadefor: 1 } },
+          { t: "Fully charged, also mean", w: { badguy: 2 } },
+          { t: "Running on empty", w: { everythingiwanted: 2 } },
+          { t: "Do not talk to me", w: { happierthanever: 2 } },
+          { t: "Solo mode, thinking deeply", w: { whatwasimadefor: 2 } }
+        ]
+      },
+      {
+        q: "If today had a weather",
+        opts: [
+          { t: "Pale sun through curtains", w: { oceaneyes: 2 } },
+          { t: "Neon rain at night", w: { badguy: 2 } },
+          { t: "Overcast with a soft breeze", w: { everythingiwanted: 2 } },
+          { t: "Thunder rolling in", w: { happierthanever: 2 } },
+          { t: "Late afternoon gold", w: { whatwasimadefor: 2 } }
+        ]
+      }
+    ]
+  };
+
+  // =============================================================
+  // DATA: ABOUT YOU (FRIENDSHIP TYPE)
+  // =============================================================
+  const friendQuiz = {
+    title: "what's your friendship type",
+    kicker: "a soft audit of how you show up",
+    members: {
+      anchor: {
+        name: "the anchor",
+        desc: "You are the one people come to when things fall apart. You hold space. You remember the details. You are a safe place. Just make sure someone is holding space for you too."
+      },
+      hype: {
+        name: "the hype",
+        desc: "You are the one who makes people feel 10 feet tall. You believe in your friends before they believe in themselves. Your gift is the ability to see people. Do not forget to receive it too."
+      },
+      chaos: {
+        name: "beloved chaos",
+        desc: "Your role is fun. You pull people out of their heads and into the moment. Life is more interesting with you in it. The risk is that people only see you in one mode. Let them see the quiet you too."
+      },
+      lowkey: {
+        name: "the low-key legend",
+        desc: "Low effort, high value. You are the friend who does not need constant contact but shows up on the exact right day. Quiet loyalty. Depth without noise."
+      },
+      architect: {
+        name: "the architect",
+        desc: "You organise things. You make the plans. Without you, the group chat would be a graveyard. Your love language is logistics. That is romantic and underrated."
+      }
+    },
+    questions: [
+      {
+        q: "When a friend is going through it, you",
+        opts: [
+          { t: "Drop everything and listen", w: { anchor: 3 } },
+          { t: "Send reminders they are amazing", w: { hype: 3 } },
+          { t: "Try to cheer them up with silliness", w: { chaos: 3 } },
+          { t: "Quietly check in with a specific thing", w: { lowkey: 3 } },
+          { t: "Make them a plan to feel better", w: { architect: 3 } }
+        ]
+      },
+      {
+        q: "Group chat: your main role",
+        opts: [
+          { t: "Emotional processing", w: { anchor: 3 } },
+          { t: "Cheerleader", w: { hype: 3 } },
+          { t: "Comedian", w: { chaos: 3 } },
+          { t: "Lurker who drops gold occasionally", w: { lowkey: 3 } },
+          { t: "Planner", w: { architect: 3 } }
+        ]
+      },
+      {
+        q: "You feel loved when a friend",
+        opts: [
+          { t: "Actually asks how you are and waits for the real answer", w: { anchor: 3 } },
+          { t: "Hypes your outfit in front of other people", w: { hype: 3 } },
+          { t: "Pulls you into something silly last minute", w: { chaos: 3 } },
+          { t: "Notices something nobody else noticed", w: { lowkey: 3 } },
+          { t: "Remembers the details and plans around them", w: { architect: 3 } }
+        ]
+      },
+      {
+        q: "Your biggest friendship fear",
+        opts: [
+          { t: "Being too much", w: { anchor: 3 } },
+          { t: "Being forgotten", w: { hype: 3 } },
+          { t: "Being boring", w: { chaos: 3 } },
+          { t: "Being needy", w: { lowkey: 3 } },
+          { t: "Being taken for granted", w: { architect: 3 } }
+        ]
+      },
+      {
+        q: "Ideal group hang",
+        opts: [
+          { t: "Long slow dinner, everyone shares", w: { anchor: 3 } },
+          { t: "Getting ready together, lots of compliments", w: { hype: 3 } },
+          { t: "Something unhinged and memorable", w: { chaos: 3 } },
+          { t: "Small, calm, a couple of people", w: { lowkey: 3 } },
+          { t: "A plan with a plan. Timed. Optimised.", w: { architect: 3 } }
+        ]
+      },
+      {
+        q: "What you wish more people saw in you",
+        opts: [
+          { t: "That you need care too", w: { anchor: 3 } },
+          { t: "That your love is deliberate", w: { hype: 3 } },
+          { t: "That you are deeper than the jokes", w: { chaos: 3 } },
+          { t: "That you care more than you show", w: { lowkey: 3 } },
+          { t: "The thinking behind everything", w: { architect: 3 } }
+        ]
+      }
+    ]
+  };
+
+  // =============================================================
+  // DATA: WEEKEND SORTER
+  // =============================================================
+  const sorterQuestions = [
+    {
+      key: "energy",
+      q: "honest energy read right now",
+      sub: "no wrong answer. this just helps the sort",
+      opts: [
+        { t: "Low. I'm a damp sock", v: "low" },
+        { t: "Medium. Functional", v: "med" },
+        { t: "Actually kind of bouncy", v: "high" }
+      ]
+    },
+    {
+      key: "social",
+      q: "who with",
+      sub: "pick the one that fits this weekend",
+      opts: [
+        { t: "Just me", v: "solo" },
+        { t: "One friend", v: "one" },
+        { t: "A group", v: "group" },
+        { t: "Family things happening", v: "family" }
+      ]
+    },
+    {
+      key: "mood",
+      q: "pick a mood",
+      sub: "gut answer wins",
+      opts: [
+        { t: "Cozy. In the nest.", v: "cozy" },
+        { t: "Out and about", v: "adventure" },
+        { t: "Making something", v: "create" },
+        { t: "Moving my body", v: "move" },
+        { t: "Zoning out", v: "zone" }
+      ]
+    },
+    {
+      key: "time",
+      q: "how much time have you got",
+      sub: "rough estimate is fine",
+      opts: [
+        { t: "Couple of hours", v: "short" },
+        { t: "Half a day", v: "half" },
+        { t: "A full day", v: "full" },
+        { t: "The whole weekend", v: "weekend" }
+      ]
+    },
+    {
+      key: "budget",
+      q: "budget",
+      sub: "unbothered, just checking",
+      opts: [
+        { t: "Zero pounds", v: "zero" },
+        { t: "A fiver", v: "low" },
+        { t: "Got some cash", v: "mid" }
+      ]
+    },
+    {
+      key: "weather",
+      q: "what's the weather doing",
+      sub: "vibe check",
+      opts: [
+        { t: "Sunny", v: "sun" },
+        { t: "Cloudy or meh", v: "meh" },
+        { t: "Raining", v: "rain" }
+      ]
+    }
+  ];
+
+  const weekendActivities = [
+    {
+      title: "Film marathon with good snacks",
+      why: "Cozy, zero effort, high reward. Pick a trilogy or three films by the same director. Bonus points for a theme.",
+      tags: { energy: "low", social: ["solo", "one", "family"], mood: ["cozy", "zone"], time: ["half", "full"], budget: ["zero", "low"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Curate a very specific playlist",
+      why: "'Songs to listen to in a moody black cab at 11pm'. Name it. Sequence it. It counts as a creative project.",
+      tags: { energy: "low", social: ["solo"], mood: ["create", "cozy", "zone"], time: ["short", "half"], budget: ["zero"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Bake something you've never made",
+      why: "Start something. Something slightly ambitious. Focaccia. Cinnamon rolls. Levels unlocked through flour.",
+      tags: { energy: "med", social: ["solo", "family", "one"], mood: ["create", "cozy"], time: ["half", "full"], budget: ["low", "mid"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Walk somewhere you've never been",
+      why: "Pick a direction, take a friend, go. Put your phone in your pocket. Come back with one story.",
+      tags: { energy: "med", social: ["solo", "one", "group"], mood: ["adventure", "move"], time: ["short", "half"], budget: ["zero"], weather: ["sun", "meh"] }
+    },
+    {
+      title: "Coffee shop with a sketchbook",
+      why: "Best solo hobby there is. Order the drink you always want. Draw whatever. Nobody is watching.",
+      tags: { energy: "low", social: ["solo"], mood: ["create", "zone"], time: ["short", "half"], budget: ["low", "mid"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Text the friend you haven't seen in ages",
+      why: "Just say one specific thing. 'I saw a dog today that looked exactly like you'. See what happens.",
+      tags: { energy: "low", social: ["solo"], mood: ["cozy"], time: ["short"], budget: ["zero"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Try a new makeup or hair look",
+      why: "Low stakes experiment. Nobody has to see it. Take a photo anyway. Delete it later if you want.",
+      tags: { energy: "med", social: ["solo"], mood: ["create", "cozy"], time: ["short", "half"], budget: ["zero", "low"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Reorganise one corner of your room",
+      why: "Not the whole room. Just one bit. The desk. The bookshelf. Tiny wins. Massive dopamine.",
+      tags: { energy: "med", social: ["solo"], mood: ["create", "zone"], time: ["short", "half"], budget: ["zero"], weather: ["rain", "meh"] }
+    },
+    {
+      title: "Dance through a whole album",
+      why: "One album, no skips, curtains drawn. KATSEYE, BLACKPINK, whoever. Full choreo. Zero witnesses.",
+      tags: { energy: "high", social: ["solo"], mood: ["move", "create"], time: ["short"], budget: ["zero"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Learn a choreo from a music video",
+      why: "Pick a chorus. Loop it. Film yourself. You do not have to post it. The ick is the point.",
+      tags: { energy: "high", social: ["solo", "one", "group"], mood: ["move", "create"], time: ["short", "half"], budget: ["zero"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Bike ride somewhere random",
+      why: "No destination. Just direction. Take a playlist and a water bottle. Stop if you see a cafe.",
+      tags: { energy: "high", social: ["solo", "one", "group"], mood: ["move", "adventure"], time: ["half", "full"], budget: ["zero", "low"], weather: ["sun", "meh"] }
+    },
+    {
+      title: "Beach walk with a pocket of nothing to do",
+      why: "Leave your watch. Walk until the end of the beach. Sit for a bit. Walk back.",
+      tags: { energy: "med", social: ["solo", "one", "family"], mood: ["zone", "adventure"], time: ["half"], budget: ["zero"], weather: ["sun", "meh"] }
+    },
+    {
+      title: "Cinema alone (underrated)",
+      why: "Pick a film you are mildly curious about. Popcorn. No phone. It is a personality upgrade.",
+      tags: { energy: "low", social: ["solo"], mood: ["zone", "cozy"], time: ["half"], budget: ["mid"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Cook dinner for your family",
+      why: "Actual genuine flex. Pick a proper recipe. They will remember. You will feel competent.",
+      tags: { energy: "med", social: ["family"], mood: ["create", "cozy"], time: ["half", "full"], budget: ["low", "mid"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Start a new aesthetic board",
+      why: "Pick a mood. Build 30 images. Could be 'autumn in a coastal town'. Could be 'a girl who owns horses'. Vibes lock.",
+      tags: { energy: "low", social: ["solo"], mood: ["create", "cozy", "zone"], time: ["short", "half"], budget: ["zero"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Long bath, face mask, absolute silence",
+      why: "Recovery is a valid weekend plan. Lights low. Something lovely on a speaker. Hydrate after.",
+      tags: { energy: "low", social: ["solo"], mood: ["cozy", "zone"], time: ["short"], budget: ["zero"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Wikipedia rabbit hole for an hour",
+      why: "Start with something random. See where you end up. Screenshot the weirdest thing for the group chat.",
+      tags: { energy: "low", social: ["solo"], mood: ["zone"], time: ["short"], budget: ["zero"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Get ready in town with a friend",
+      why: "Even if you just window shop. The point is the getting ready. Coffee halfway through.",
+      tags: { energy: "med", social: ["one", "group"], mood: ["adventure", "cozy"], time: ["half", "full"], budget: ["low", "mid"], weather: ["sun", "meh", "rain"] }
+    },
+    {
+      title: "Try a new recipe you've saved",
+      why: "The saved recipes are piling up. Pick one. Shop for the ingredients. The whole arc is the fun.",
+      tags: { energy: "med", social: ["solo", "family"], mood: ["create", "cozy"], time: ["half", "full"], budget: ["low", "mid"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Write a letter to your future self",
+      why: "Not a diary. A letter. To you, a year from now. What do you want her to remember? Seal it.",
+      tags: { energy: "low", social: ["solo"], mood: ["zone", "create", "cozy"], time: ["short"], budget: ["zero"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Yoga or stretch session in your room",
+      why: "20 minutes. Find a video. Movement without the pressure of exercise. Phones away. Lights soft.",
+      tags: { energy: "low", social: ["solo"], mood: ["move", "zone", "cozy"], time: ["short"], budget: ["zero"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Plan a day trip for later",
+      why: "The planning is half the fun. Pick a town you have never been to. Train times. Cafes. Itinerary.",
+      tags: { energy: "low", social: ["solo", "one"], mood: ["create", "cozy"], time: ["short", "half"], budget: ["zero"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Invite one friend over, absolutely no plan",
+      why: "Snacks. Music. Talk rubbish. Make something. The night will invent itself.",
+      tags: { energy: "med", social: ["one"], mood: ["cozy", "create"], time: ["half", "full"], budget: ["low"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Big elaborate breakfast",
+      why: "Multiple items. Proper coffee. Fresh juice. Eat it slowly. Treat saturday morning like a restaurant.",
+      tags: { energy: "med", social: ["solo", "family", "one"], mood: ["cozy", "create"], time: ["short", "half"], budget: ["low", "mid"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Watch a documentary about something random",
+      why: "Tigers. North Korea. Cheese. Cults. The weirder the better. You will bring it up at dinner for weeks.",
+      tags: { energy: "low", social: ["solo", "family"], mood: ["zone", "cozy"], time: ["half"], budget: ["zero"], weather: ["rain", "meh", "sun"] }
+    },
+    {
+      title: "Park picnic with friends",
+      why: "Each person brings one thing. Blanket. Speaker. That is literally the entire brief. Afternoon wins.",
+      tags: { energy: "med", social: ["group", "one"], mood: ["cozy", "adventure"], time: ["half"], budget: ["low", "mid"], weather: ["sun"] }
+    }
+  ];
+
+  // =============================================================
+  // RENDER: HOME
+  // =============================================================
+  function renderHome() {
+    return `
+      <div class="topbar">
+        <div class="brand">vibe <span class="dot">✦</span> check</div>
+        <div class="status-pill">a soft landing</div>
+      </div>
+
+      <div class="home-hero fade-in">
+        <div class="hero-kicker">pick a mode</div>
+        <h1 class="hero-title">some <em>riddles</em>.<br>some <span class="accent">nonsense</span>.<br>one decision.</h1>
+        <p class="hero-sub">trivia, facts, personality tests, and a weekend sorter that will tell you what to actually do with saturday.</p>
+        <p class="hero-note">nothing tracked. nothing saved. close the tab whenever.</p>
+      </div>
+
+      <div class="mode-grid">
+        <div class="mode-card rose" onclick="openMode('riddles')">
+          <div>
+            <div class="mode-kicker">mode 01</div>
+            <div class="mode-title">riddles</div>
+            <div class="mode-desc">classic lateral thinking. tap to reveal the answer. see how many you get.</div>
+          </div>
+        </div>
+
+        <div class="mode-card gold" onclick="openMode('facts')">
+          <div>
+            <div class="mode-kicker">mode 02</div>
+            <div class="mode-title">wild facts</div>
+            <div class="mode-desc">real things that sound fake. pull one at a time. save your favourites in your head.</div>
+          </div>
+        </div>
+
+        <div class="mode-card" onclick="openQuiz('katseye')">
+          <div>
+            <div class="mode-kicker">quiz 01</div>
+            <div class="mode-title">which katseye</div>
+            <div class="mode-desc">manon, megan, lara, sophia, daniela or yoonchae. six questions. one verdict.</div>
+          </div>
+        </div>
+
+        <div class="mode-card rose" onclick="openQuiz('blackpink')">
+          <div>
+            <div class="mode-kicker">quiz 02</div>
+            <div class="mode-title">which blackpink</div>
+            <div class="mode-desc">jisoo, jennie, rosé or lisa. honest answers only. takes about two minutes.</div>
+          </div>
+        </div>
+
+        <div class="mode-card mint" onclick="openQuiz('billie')">
+          <div>
+            <div class="mode-kicker">quiz 03</div>
+            <div class="mode-title">billie eilish mood</div>
+            <div class="mode-desc">what song you actually are today. not a vibe forever. a vibe right now.</div>
+          </div>
+        </div>
+
+        <div class="mode-card" onclick="openQuiz('friend')">
+          <div>
+            <div class="mode-kicker">quiz 04</div>
+            <div class="mode-title">friendship type</div>
+            <div class="mode-desc">how you actually show up for your people. slightly more serious. kind of illuminating.</div>
+          </div>
+        </div>
+
+        <div class="mode-card coral" onclick="openSorter()" style="grid-column: 1 / -1;">
+          <div>
+            <div class="mode-kicker">decision engine</div>
+            <div class="mode-title">weekend sorter</div>
+            <div class="mode-desc">six questions. three tailored suggestions for what to do this weekend. ranked.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="foot">
+        made with <em>care</em> . no ads . no tracking . close whenever
+      </div>
+    `;
+  }
+
+  // =============================================================
+  // RENDER: RIDDLES
+  // =============================================================
+  function renderRiddles() {
+    const r = state.modeData[state.currentIdx];
+    return `
+      <div class="topbar">
+        <div class="brand">vibe <span class="dot">✦</span> check</div>
+        <button class="back-link" onclick="goHome()">← back</button>
+      </div>
+
+      <div class="section-head">
+        <div class="section-kicker">riddle ${state.currentIdx + 1} of ${state.modeData.length}</div>
+        <div class="section-kicker">tap to reveal</div>
+      </div>
+
+      <div class="card-stack fade-in">
+        <div>
+          <div class="card-tag">riddle</div>
+          <div class="card-prompt">${r.q}</div>
+          <div id="answer-box" class="hidden">
+            <div class="card-answer">
+              <span class="answer-label">answer</span>
+              ${r.a}
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="toggleAnswer()">reveal</button>
+          <button class="btn" onclick="nextItem()">next →</button>
+          <button class="btn-ghost btn" onclick="shuffleStack()">shuffle</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // =============================================================
+  // RENDER: FACTS
+  // =============================================================
+  function renderFacts() {
+    const f = state.modeData[state.currentIdx];
+    return `
+      <div class="topbar">
+        <div class="brand">vibe <span class="dot">✦</span> check</div>
+        <button class="back-link" onclick="goHome()">← back</button>
+      </div>
+
+      <div class="section-head">
+        <div class="section-kicker">fact ${state.currentIdx + 1} of ${state.modeData.length}</div>
+        <div class="section-kicker">${f.t}</div>
+      </div>
+
+      <div class="card-stack fade-in">
+        <div>
+          <div class="card-tag">did you know</div>
+          <div class="card-prompt">${f.f}</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="nextItem()">next fact →</button>
+          <button class="btn-ghost btn" onclick="shuffleStack()">shuffle</button>
+          <button class="btn-ghost btn" onclick="goHome()">done</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // =============================================================
+  // RENDER: QUIZ QUESTION
+  // =============================================================
+  function renderQuizQuestion() {
+    const quiz = state.modeData;
+    const idx = state.currentIdx;
+    const q = quiz.questions[idx];
+    const total = quiz.questions.length;
+    const pct = (idx / total) * 100;
+
+    return `
+      <div class="topbar">
+        <div class="brand">vibe <span class="dot">✦</span> check</div>
+        <button class="back-link" onclick="goHome()">← back</button>
+      </div>
+
+      <div class="section-head">
+        <div class="section-kicker">${quiz.title}</div>
+        <div class="section-kicker">${idx + 1} of ${total}</div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" style="width: ${pct}%"></div>
+      </div>
+
+      <div class="card-stack fade-in">
+        <div>
+          <div class="card-tag">${quiz.kicker}</div>
+          <div class="card-prompt">${q.q}</div>
+          <div class="opt-stack">
+            ${q.opts.map((opt, i) => `
+              <button class="opt" onclick="answerQuiz(${i})">
+                <span class="opt-letter">${String.fromCharCode(65 + i)}</span>${opt.t}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // =============================================================
+  // RENDER: QUIZ RESULT
+  // =============================================================
+  function renderQuizResult() {
+    const quiz = state.modeData;
+    const scores = {};
+    Object.keys(quiz.members).forEach(k => scores[k] = 0);
+
+    state.quizAnswers.forEach((aIdx, qIdx) => {
+      const weights = quiz.questions[qIdx].opts[aIdx].w;
+      Object.entries(weights).forEach(([k, v]) => { scores[k] = (scores[k] || 0) + v; });
+    });
+
+    let topKey = Object.keys(quiz.members)[0];
+    let topScore = -1;
+    Object.entries(scores).forEach(([k, s]) => {
+      if (s > topScore) { topScore = s; topKey = k; }
+    });
+
+    const winner = quiz.members[topKey];
+
+    return `
+      <div class="topbar">
+        <div class="brand">vibe <span class="dot">✦</span> check</div>
+        <button class="back-link" onclick="goHome()">← back</button>
+      </div>
+
+      <div class="fade-in">
+        <div class="result-hero">
+          <div class="result-kicker">the verdict</div>
+          <div class="result-name">${winner.name}</div>
+          <div class="result-desc">${winner.desc}</div>
+        </div>
+
+        <div class="btn-row" style="justify-content: center;">
+          <button class="btn btn-primary" onclick="retryQuiz()">try again</button>
+          <button class="btn" onclick="goHome()">pick another mode</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // =============================================================
+  // RENDER: SORTER QUESTION
+  // =============================================================
+  function renderSorterQuestion() {
+    const idx = state.sorterStep;
+    const q = sorterQuestions[idx];
+    const pct = (idx / sorterQuestions.length) * 100;
+
+    return `
+      <div class="topbar">
+        <div class="brand">vibe <span class="dot">✦</span> check</div>
+        <button class="back-link" onclick="goHome()">← back</button>
+      </div>
+
+      <div class="section-head">
+        <div class="section-kicker">weekend sorter</div>
+        <div class="section-kicker">${idx + 1} of ${sorterQuestions.length}</div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" style="width: ${pct}%"></div>
+      </div>
+
+      <div class="card-stack fade-in">
+        <div>
+          <div class="card-tag">sorter</div>
+          <div class="sorter-q">${q.q}</div>
+          <div class="sorter-sub">${q.sub}</div>
+          <div class="opt-stack">
+            ${q.opts.map((opt, i) => `
+              <button class="opt" onclick="answerSorter('${q.key}', '${opt.v}')">
+                <span class="opt-letter">${String.fromCharCode(65 + i)}</span>${opt.t}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // =============================================================
+  // RENDER: SORTER RESULT
+  // =============================================================
+  function renderSorterResult() {
+    const a = state.sorterAnswers;
+
+    const scored = weekendActivities.map(act => {
+      let score = 0;
+      const tags = act.tags;
+
+      // Energy (hard-ish)
+      if (tags.energy === a.energy) score += 4;
+      else if (
+        (tags.energy === "low" && a.energy === "med") ||
+        (tags.energy === "med" && a.energy === "low") ||
+        (tags.energy === "med" && a.energy === "high") ||
+        (tags.energy === "high" && a.energy === "med")
+      ) score += 1;
+
+      // Social
+      if (tags.social.includes(a.social)) score += 4;
+
+      // Mood
+      if (tags.mood.includes(a.mood)) score += 5;
+
+      // Time
+      if (tags.time.includes(a.time)) score += 3;
+      else if (a.time === "weekend") score += 2;
+
+      // Budget
+      if (tags.budget.includes(a.budget)) score += 3;
+      else if (a.budget === "mid") score += 1;
+
+      // Weather
+      if (tags.weather.includes(a.weather)) score += 2;
+
+      return { ...act, score };
+    });
+
+    scored.sort((x, y) => y.score - x.score);
+    const top = scored.slice(0, 3);
+
+    return `
+      <div class="topbar">
+        <div class="brand">vibe <span class="dot">✦</span> check</div>
+        <button class="back-link" onclick="goHome()">← back</button>
+      </div>
+
+      <div class="fade-in">
+        <div style="padding: 8px 0 20px;">
+          <div class="hero-kicker">weekend sorted</div>
+          <h2 style="font-family: 'Instrument Serif', serif; font-size: 38px; line-height: 1.1; margin-bottom: 10px;">three things, <em style="color: var(--rose); font-style: italic;">ranked</em></h2>
+          <p style="color: var(--text-dim); font-size: 14px; max-width: 440px;">pick the one that feels right. the top one is the strongest match to what you just said.</p>
+        </div>
+
+        <div class="sorter-result">
+          ${top.map((act, i) => `
+            <div class="result-card ${i === 0 ? 'top' : ''}">
+              <div class="result-rank">${i === 0 ? 'top match' : i === 1 ? 'also strong' : 'solid backup'}</div>
+              <div class="result-title">${act.title}</div>
+              <div class="result-why">${act.why}</div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="btn-row" style="margin-top: 28px;">
+          <button class="btn btn-primary" onclick="openSorter()">redo the sort</button>
+          <button class="btn" onclick="goHome()">home</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // =============================================================
+  // ACTIONS
+  // =============================================================
+  window.openMode = function(mode) {
+    state.view = mode;
+    state.currentIdx = 0;
+    if (mode === 'riddles') state.modeData = shuffle([...riddles]);
+    if (mode === 'facts') state.modeData = shuffle([...facts]);
+    render();
+  };
+
+  window.openQuiz = function(key) {
+    state.view = 'quiz';
+    state.currentIdx = 0;
+    state.quizAnswers = [];
+    state.currentQuizKey = key;
+    if (key === 'katseye') state.modeData = katseyeQuiz;
+    if (key === 'blackpink') state.modeData = blackpinkQuiz;
+    if (key === 'billie') state.modeData = billieQuiz;
+    if (key === 'friend') state.modeData = friendQuiz;
+    render();
+  };
+
+  window.openSorter = function() {
+    state.view = 'sorter';
+    state.sorterStep = 0;
+    state.sorterAnswers = {};
+    render();
+  };
+
+  window.answerQuiz = function(optIdx) {
+    state.quizAnswers.push(optIdx);
+    if (state.currentIdx < state.modeData.questions.length - 1) {
+      state.currentIdx++;
+      render();
+    } else {
+      state.view = 'quiz-result';
+      render();
+    }
+  };
+
+  window.retryQuiz = function() {
+    state.currentIdx = 0;
+    state.quizAnswers = [];
+    state.view = 'quiz';
+    render();
+  };
+
+  window.answerSorter = function(key, value) {
+    state.sorterAnswers[key] = value;
+    if (state.sorterStep < sorterQuestions.length - 1) {
+      state.sorterStep++;
+      render();
+    } else {
+      state.view = 'sorter-result';
+      render();
+    }
+  };
+
+  window.toggleAnswer = function() {
+    const box = document.getElementById('answer-box');
+    if (box) box.classList.toggle('hidden');
+  };
+
+  window.nextItem = function() {
+    state.currentIdx = (state.currentIdx + 1) % state.modeData.length;
+    render();
+  };
+
+  window.shuffleStack = function() {
+    state.modeData = shuffle([...state.modeData]);
+    state.currentIdx = 0;
+    render();
+  };
+
+  window.goHome = function() {
+    state.view = 'home';
+    state.modeData = null;
+    state.currentIdx = 0;
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // =============================================================
+  // RENDER ROUTER
+  // =============================================================
+  function render() {
+    if (state.view === 'home') app.innerHTML = renderHome();
+    else if (state.view === 'riddles') app.innerHTML = renderRiddles();
+    else if (state.view === 'facts') app.innerHTML = renderFacts();
+    else if (state.view === 'quiz') app.innerHTML = renderQuizQuestion();
+    else if (state.view === 'quiz-result') app.innerHTML = renderQuizResult();
+    else if (state.view === 'sorter') app.innerHTML = renderSorterQuestion();
+    else if (state.view === 'sorter-result') app.innerHTML = renderSorterResult();
+  }
+
+  // =============================================================
+  // UTILS
+  // =============================================================
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // =============================================================
+  // INIT
+  // =============================================================
+  render();
+</script>
+
+</body>
+</html>
